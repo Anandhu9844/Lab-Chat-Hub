@@ -381,7 +381,7 @@ export default function LabChatApp() {
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Share code, ask questions, upload files, or start a discussion..."
+                placeholder="Share code, ask questions or start a discussion..."
                 className="text-input"
                 rows={2}
               />
