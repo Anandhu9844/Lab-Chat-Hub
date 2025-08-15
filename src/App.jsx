@@ -217,11 +217,6 @@ export default function LabChatApp() {
       <header className="app-header">
         <div className="header-content">
           <div className="header-icon">
-            <img
-              className="logo"
-              src="../chathub.png"
-              alt="Chat Hub Logo"
-            />
             <h1>Lab Chat Hub</h1>
           </div>
 
