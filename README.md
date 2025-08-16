@@ -1,6 +1,6 @@
-# My Project
+# Lab Chat Hub 💬
 
-Lab Chat Hub 💬
+
 An anonymous, real-time chat application designed for students and lab collaborators. Share ideas, code snippets, and files in dedicated channels for Study, Entertainment, Fun, and Love. Features a local AI assistant mode for contextual help.
 
 <p align="center">
