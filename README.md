@@ -4,13 +4,13 @@ Lab Chat Hub 💬
 An anonymous, real-time chat application designed for students and lab collaborators. Share ideas, code snippets, and files in dedicated channels for Study, Entertainment, Fun, and Love. Features a local AI assistant mode for contextual help.
 
 <p align="center">
-<a href="https://YOUR_VERCEL_DEPLOYMENT_URL_HERE" target="_blank">
+<a href="https://lab-chat-hub.vercel.app" target="_blank">
 <img src="https://img.shields.io/badge/Launch-App%20Shortcut-blue?style=for-the-badge&logo=vercel" alt="Launch App Shortcut">
 </a>
 </p>
 
 <p align="center">
-<em>(Replace the link above with your actual Vercel deployment URL)</em>
+<em>lab-chat-hub</em>
 </p>
 
 ✨ Features
@@ -21,7 +21,5 @@ Multiple Chat Rooms: Dedicated sections for different topics (Study, Entertainme
 Anonymous Chat: No login or registration required to participate.
 
 File Sharing: Upload and share images and other files with everyone in the chat, powered by Firebase Storage.
-
-AI Assistant Mode: A local simulation of an AI that provides contextual responses to your messages.
 
 Modern UI: A clean and responsive user interface inspired by modern chat applications.
