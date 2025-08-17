@@ -230,7 +230,7 @@ export default function LabChatApp() {
       return { type: "html", icon: Code };
     if (lowerText.includes("int main") || lowerText.includes("printf"))
       return { type: "c", icon: Code };
-    if (lowerText.includes("select ") || lowerText.includes("sql"))
+    if (lowerText.includes("select ") || lowerText.includes("sqlplus"))
       return { type: "sql", icon: Code };
     if (text && text.length > 200) return { type: "document", icon: FileText };
     return { type: "text", icon: null };
