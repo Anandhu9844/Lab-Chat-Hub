@@ -230,7 +230,7 @@ export default function LabChatApp() {
       return { type: "html", icon: Code };
     if (lowerText.includes("int main") || lowerText.includes("printf"))
       return { type: "c", icon: Code };
-    if (lowerText.includes("select ") || lowerText.includes("insert into"))
+    if (lowerText.includes("select ") || lowerText.includes("sql"))
       return { type: "sql", icon: Code };
     if (text && text.length > 200) return { type: "document", icon: FileText };
     return { type: "text", icon: null };
@@ -474,7 +474,7 @@ export default function LabChatApp() {
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Share code, ask questions or start a discussion..."
+                placeholder="Drop code, ask qs or start a discussion..."
                 className="text-input"
                 rows={1}
               />
