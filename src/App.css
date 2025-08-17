@@ -87,7 +87,7 @@ body {
 /* --- Main Content --- */
 /* UPDATED: Made the main container smaller and centered */
 .app-main {
-  max-width: 800px; /* Reduced max-width for a more compact look */
+  max-width: auto; /* Reduced max-width for a more compact look */
   margin: 0 auto;
   padding: 1.5rem 1rem;
 }
