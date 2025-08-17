@@ -85,10 +85,25 @@ body {
 }
 
 /* --- Main Content --- */
+/* UPDATED: Made the main container smaller and centered */
 .app-main {
-  max-width: 96rem; /* 6xl */
+  max-width: 800px; /* Reduced max-width for a more compact look */
   margin: 0 auto;
   padding: 1.5rem 1rem;
+}
+
+/* --- Chat Card --- */
+/* UPDATED: Adjusted height for the smaller canvas */
+.chat-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  border: 1px solid #e5e7eb; /* neutral-200 */
+  height: 600px; /* Set a fixed, smaller height */
+  min-height: auto; /* Removed the previous min-height */
+  display: flex;
+  flex-direction: column;
 }
 
 /* --- Section Tabs --- */
@@ -137,19 +152,46 @@ body {
 }
 
 /* --- Chat Card --- */
-/* UPDATED: Made chat card taller */
-.chat-card {
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  border-radius: 1rem;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  border: 1px solid #e5e7eb; /* neutral-200 */
-  height: calc(100vh - 240px); /* Increased height */
-  min-height: 32rem; /* Increased min-height */
-  display: flex;
-  flex-direction: column;
+/* --- Styles for the Copy Button --- */
+/* Make the message bubble the container for the button */
+.message-bubble {
+  position: relative; /* This is the key change */
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  width: fit-content;
+  max-width: 100%;
 }
 
+.copy-button {
+  position: absolute;
+  top: 0.5rem; /* Position from the top */
+  right: 0.5rem; /* Position from the right */
+  background-color: #374151; /* A darker background for code blocks */
+  border: 1px solid #4b5563;
+  border-radius: 0.375rem; /* Slightly less rounded */
+  padding: 0.25rem;
+  cursor: pointer;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  color: #d1d5db; /* Lighter icon color */
+  z-index: 1; /* Ensure it's on top */
+}
+
+/* Show the button when hovering over the BUBBLE, not the whole row */
+.message-bubble:hover .copy-button {
+  opacity: 1; /* Show on hover */
+}
+
+.copy-button:hover {
+  background-color: #4b5563;
+}
+
+.copy-button.copied {
+  background-color: #10b981; /* emerald-500 */
+  color: white;
+  border-color: #059669;
+}
 /* --- Messages Area --- */
 .messages-container {
   flex: 1;
