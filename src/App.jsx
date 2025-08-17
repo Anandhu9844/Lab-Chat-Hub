@@ -497,9 +497,10 @@ export default function LabChatApp() {
               className="hidden-file-input"
             />
             <p className="input-footer-text">
-              📎 Upload code files, documents, or images • Chat auto-deletes
-              after 50 messages
-            </p>
+  📎 Upload code files, documents, or images • 
+  <a href="https://drive.google.com/file/d/1VOQYLqsNoUbATDTircvnu2sVqMXrLlQx/view?usp=drive_link" target="_blank" rel="noopener noreferrer">lab-manual</a> • 
+  <a href="code4LabExam">Code4LabExam</a>
+</p>
           </div>
         </div>
       </main>
