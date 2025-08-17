@@ -498,8 +498,8 @@ export default function LabChatApp() {
             />
             <p className="input-footer-text">
   📎 Upload code files, documents, or images • 
-  <a href="https://drive.google.com/file/d/1VOQYLqsNoUbATDTircvnu2sVqMXrLlQx/view?usp=drive_link" target="_blank" rel="noopener noreferrer">lab-manual</a> • 
-  <a href="code4LabExam">Code4LabExam</a>
+  <a href="https://drive.google.com/file/d/1VOQYLqsNoUbATDTircvnu2sVqMXrLlQx/view?usp=drive_link" target="_blank" rel="noopener noreferrer"> lab-manual</a> • 
+  <a href="https://code4labexam.vercel.app/"> Code4LabExam</a>
 </p>
           </div>
         </div>
