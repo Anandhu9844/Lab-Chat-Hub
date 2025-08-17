@@ -99,6 +99,39 @@ export default function LabChatApp() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   useEffect(scrollToBottom, [messages]);
 
+  // NEW: Function to handle copying text to the clipboard
+  const handleCopyMessage = (textToCopy, messageId) => {
+    // A fallback for environments where navigator.clipboard might not be available
+    if (!navigator.clipboard) {
+      const textArea = document.createElement("textarea");
+      textArea.value = textToCopy;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        setCopiedMessageId(messageId);
+        setTimeout(() => setCopiedMessageId(null), 2000);
+      } catch (err) {
+        console.error("Fallback: Oops, unable to copy", err);
+      }
+      document.body.removeChild(textArea);
+      return;
+    }
+
+    navigator.clipboard
+      .writeText(textToCopy)
+      .then(() => {
+        setCopiedMessageId(messageId);
+        setTimeout(() => {
+          setCopiedMessageId(null);
+        }, 2000); // Reset after 2 seconds
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  };
+
   const formatFileSize = (bytes) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -246,61 +279,69 @@ export default function LabChatApp() {
 
         <div className="chat-card">
           <div className="messages-container">
-            {(messages[activeSection] || []).length === 0 ? (
-              <div className="empty-chat-placeholder">
-                <div className="emoji">💬</div>
-                <p>No messages yet. Start the conversation!</p>
-                <p className="subtitle">
-                  Share code, ask questions, or just chat anonymously
-                </p>
-              </div>
-            ) : (
-              (messages[activeSection] || []).map((message) => {
-                const IconComponent = getIconComponent(message.iconName);
-                return (
-                  <div key={message.id} className="message-row">
-                    <div
-                      className={`avatar ${
-                        message.sender === "ai" ? "ai-avatar" : "user-avatar"
-                      }`}
-                    >
-                      {message.sender === "ai" ? (
-                        <Bot size={16} />
-                      ) : (
-                        <User size={16} />
+            {(messages[activeSection] || []).map((message) => {
+              const IconComponent = getIconComponent(message.iconName);
+              const isCopied = copiedMessageId === message.id;
+              return (
+                <div key={message.id} className="message-row">
+                  <div
+                    className={`avatar ${
+                      message.sender === "ai" ? "ai-avatar" : "user-avatar"
+                    }`}
+                  >
+                    {message.sender === "ai" ? (
+                      <Bot size={16} />
+                    ) : (
+                      <User size={16} />
+                    )}
+                  </div>
+                  <div className="message-content">
+                    <div className="message-header">
+                      <span
+                        className={`sender-name ${
+                          message.sender === "ai" ? "ai-name" : "user-name"
+                        }`}
+                      >
+                        {message.sender === "ai"
+                          ? "AI Assistant"
+                          : "Anonymous Student"}
+                      </span>
+                      <span className="timestamp">{message.timestamp}</span>
+                      {IconComponent && (
+                        <span className="message-type-badge">
+                          <IconComponent size={12} />
+                          {message.type.toUpperCase()}
+                        </span>
                       )}
                     </div>
-                    <div className="message-content">
-                      <div className="message-header">
-                        <span
-                          className={`sender-name ${
-                            message.sender === "ai" ? "ai-name" : "user-name"
-                          }`}
-                        >
-                          {message.sender === "ai"
-                            ? "AI Assistant"
-                            : "Anonymous Student"}
-                        </span>
-                        <span className="timestamp">{message.timestamp}</span>
-                        {IconComponent && (
-                          <span className="message-type-badge">
-                            <IconComponent size={12} />
-                            {message.type.toUpperCase()}
-                          </span>
-                        )}
-                      </div>
-                      <div
-                        className={`message-bubble ${
-                          message.sender === "ai" ? "ai-bubble" : "user-bubble"
-                        } ${message.type !== "text" ? "code-bubble" : ""}`}
-                      >
-                        <pre>{message.text}</pre>
-                      </div>
+                    <div
+                      className={`message-bubble ${
+                        message.sender === "ai" ? "ai-bubble" : "user-bubble"
+                      } ${message.type !== "text" ? "code-bubble" : ""}`}
+                    >
+                      {message.text && <pre>{message.text}</pre>}
+                      <MessageAttachments attachments={message.attachments} />
                     </div>
                   </div>
-                );
-              })
-            )}
+                  {/* NEW: Added the Copy Button */}
+                  {message.text && (
+                    <button
+                      onClick={() =>
+                        handleCopyMessage(message.text, message.id)
+                      }
+                      className={`copy-button ${isCopied ? "copied" : ""}`}
+                      title="Copy message"
+                    >
+                      {isCopied ? (
+                        <ClipboardCheck size={14} />
+                      ) : (
+                        <Clipboard size={14} />
+                      )}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
             {isLoading && (
               <div className="message-row">
                 <div className="avatar ai-avatar">
