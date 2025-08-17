@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+// NEW: Added Clipboard and ClipboardCheck icons
 import {
   Send,
   Bot,
@@ -11,6 +12,8 @@ import {
   Coffee,
   Paperclip,
   X,
+  Clipboard,
+  ClipboardCheck,
 } from "lucide-react";
 import { initializeApp } from "firebase/app";
 import {
@@ -23,9 +26,9 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
-import "./App.css"; // Import the CSS file
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import "./App.css";
 
-// --- Firebase Configuration ---
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -35,9 +38,9 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// --- Initialize Firebase and Firestore ---
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 export default function LabChatApp() {
   const [activeSection, setActiveSection] = useState("study");
@@ -46,6 +49,8 @@ export default function LabChatApp() {
   const [isAiMode, setIsAiMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  // This state is crucial for the copy button to work.
+  const [copiedMessageId, setCopiedMessageId] = useState(null);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -58,7 +63,7 @@ export default function LabChatApp() {
       colorClass: "entertainment-color",
     },
     { id: "fun", name: "Fun", icon: Coffee, colorClass: "fun-color" },
-    { id: "Love", name: "Lost", icon: Heart, colorClass: "love-color" },
+    { id: "love", name: "Love", icon: Heart, colorClass: "love-color" },
   ];
 
   useEffect(() => {
@@ -71,7 +76,6 @@ export default function LabChatApp() {
       orderBy("timestamp", "desc"),
       limit(50)
     );
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const sectionMessages = snapshot.docs
         .map((doc) => ({
@@ -85,13 +89,8 @@ export default function LabChatApp() {
             "sending...",
         }))
         .reverse();
-
-      setMessages((prevMessages) => ({
-        ...prevMessages,
-        [activeSection]: sectionMessages,
-      }));
+      setMessages((prev) => ({ ...prev, [activeSection]: sectionMessages }));
     });
-
     return () => unsubscribe();
   }, [activeSection]);
 
@@ -99,7 +98,7 @@ export default function LabChatApp() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   useEffect(scrollToBottom, [messages]);
 
-  // NEW: Function to handle copying text to the clipboard
+  // Function to handle copying text to the clipboard
   const handleCopyMessage = (textToCopy, messageId) => {
     // A fallback for environments where navigator.clipboard might not be available
     if (!navigator.clipboard) {
@@ -166,6 +165,26 @@ export default function LabChatApp() {
 
   const handleSendMessage = async () => {
     if (!currentMessage.trim() && selectedFiles.length === 0) return;
+    setIsLoading(true);
+
+    const uploadedFiles = [];
+    for (const selectedFile of selectedFiles) {
+      const storageRef = ref(
+        storage,
+        `files/${Date.now()}-${selectedFile.name}`
+      );
+      try {
+        const snapshot = await uploadBytes(storageRef, selectedFile.file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        uploadedFiles.push({
+          name: selectedFile.name,
+          type: selectedFile.type,
+          url: downloadURL,
+        });
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
 
     const messageType = detectMessageType(currentMessage);
     const newMessage = {
@@ -174,6 +193,7 @@ export default function LabChatApp() {
       type: messageType.type,
       iconName: messageType.icon ? messageType.icon.displayName : null,
       timestamp: serverTimestamp(),
+      attachments: uploadedFiles,
     };
 
     const messagesCollection = collection(
@@ -185,9 +205,9 @@ export default function LabChatApp() {
     const userMessage = currentMessage;
     setCurrentMessage("");
     setSelectedFiles([]);
+    setIsLoading(false);
 
     if (isAiMode) {
-      setIsLoading(true);
       const aiResponseText = await getAiResponse(userMessage);
       const aiMessage = {
         text: aiResponseText,
@@ -195,9 +215,9 @@ export default function LabChatApp() {
         type: "text",
         iconName: null,
         timestamp: serverTimestamp(),
+        attachments: [],
       };
       await addDoc(messagesCollection, aiMessage);
-      setIsLoading(false);
     }
   };
 
@@ -240,6 +260,37 @@ export default function LabChatApp() {
     return icons[iconName.replace("Svg", "")] || null;
   };
 
+  const MessageAttachments = ({ attachments = [] }) => {
+    if (!attachments.length) return null;
+    return (
+      <div className="attachments-grid">
+        {attachments.map((file, index) => (
+          <div key={index} className="attachment-item">
+            {file.type.startsWith("image/") ? (
+              <a href={file.url} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={file.url}
+                  alt={file.name}
+                  className="attachment-image"
+                />
+              </a>
+            ) : (
+              <a
+                href={file.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="attachment-file"
+              >
+                <FileText size={24} />
+                <span>{file.name}</span>
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="app-container">
       <div aria-hidden className="background-overlay">
@@ -252,7 +303,6 @@ export default function LabChatApp() {
           <div className="header-icon">
             <h1>Lab Chat Hub</h1>
           </div>
-
           <p>Anonymous collaboration space for lab students</p>
         </div>
       </header>
@@ -323,7 +373,7 @@ export default function LabChatApp() {
                       <MessageAttachments attachments={message.attachments} />
                     </div>
                   </div>
-                  {/* NEW: Added the Copy Button */}
+                  {/* Added the Copy Button */}
                   {message.text && (
                     <button
                       onClick={() =>
@@ -351,7 +401,7 @@ export default function LabChatApp() {
                 <div className="message-bubble ai-bubble">
                   <div className="loading-indicator">
                     <div className="spinner" />
-                    AI is thinking...
+                    Processing...
                   </div>
                 </div>
               </div>
@@ -418,13 +468,14 @@ export default function LabChatApp() {
               >
                 <Paperclip size={18} />
               </button>
+              {/* Made textarea shorter by changing rows */}
               <textarea
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="Share code, ask questions or start a discussion..."
                 className="text-input"
-                rows={2}
+                rows={1}
               />
               <button
                 onClick={handleSendMessage}
