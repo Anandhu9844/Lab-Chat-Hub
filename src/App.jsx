@@ -64,7 +64,7 @@ export default function LabChatApp() {
       colorClass: "entertainment-color",
     },
     { id: "fun", name: "Fun", icon: Coffee, colorClass: "fun-color" },
-    { id: "love", name: "Love", icon: Heart, colorClass: "love-color" },
+    { id: "love", name: "Lost", icon: Heart, colorClass: "love-color" },
   ];
 
   useEffect(() => {
