@@ -27,7 +27,8 @@ import {
   limit,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import "./App.css";
+// The CSS import has been removed from this file.
+// It should be in your src/main.jsx file to apply styles globally.
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
