@@ -262,7 +262,7 @@ export default function LabChatApp() {
       <div className={`sidebar ${isSidebarOpen ? "" : "closed"}`}>
         <div className="sidebar-header">
           <h1 className="logo">chat</h1>
-          <span className="version">R</span>
+          <span className="version">v1.3</span>
         </div>
         <nav className="navigation">
           {sections.map((item) => {
@@ -429,7 +429,7 @@ export default function LabChatApp() {
             </div>
             <div className="upload-info">
               <span>📎 Upload code files, documents, or images • </span>
-              <a href="#" className="upload-link">
+              <a href="https://drive.google.com/drive/folders/1FxbwnbgCy2TEX-OZcLOXPWkx4zZb2AB5" className="upload-link">
                 Lab-manual
               </a>
               <span> • </span>
