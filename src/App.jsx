@@ -429,7 +429,7 @@ export default function LabChatApp() {
             </div>
             <div className="upload-info">
               <span>📎 Upload code files, documents, or images • </span>
-              <a href="https://drive.google.com/drive/folders/1FxbwnbgCy2TEX-OZcLOXPWkx4zZb2AB5" className="upload-link">
+              <a href="https://drive.google.com/file/d/1VOQYLqsNoUbATDTircvnu2sVqMXrLlQx/view?usp=drive_link" className="upload-link">
                 Lab-manual
               </a>
               <span> • </span>
